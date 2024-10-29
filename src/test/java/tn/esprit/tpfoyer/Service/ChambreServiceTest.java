@@ -31,22 +31,19 @@ class ChambreServiceImplMockTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize a sample Chambre object
         chambre = new Chambre();
         chambre.setIdChambre(1L);
         chambre.setNumeroChambre(101);
-        chambre.setTypeC(TypeChambre.SINGLE);
+        chambre.setTypeC(TypeChambre.SIMPLE);  // Use an existing type here
 
-        // Initialize a sample list of Chambre objects
         chambreList = Arrays.asList(
                 new Chambre(2L, 102, TypeChambre.DOUBLE, null, null),
-                new Chambre(3L, 103, TypeChambre.SUITE, null, null)
+                new Chambre(3L, 103, TypeChambre.TRIPLE, null, null)
         );
     }
 
     @Test
     void testRetrieveAllChambres() {
-        // Mock the retrieveAllChambres method of the repository
         when(chambreRepository.findAll()).thenReturn(chambreList);
 
         List<Chambre> retrievedChambres = chambreService.retrieveAllChambres();
@@ -58,7 +55,6 @@ class ChambreServiceImplMockTest {
 
     @Test
     void testAddChambre() {
-        // Mock the addChambre method
         when(chambreRepository.save(chambre)).thenReturn(chambre);
 
         Chambre savedChambre = chambreService.addChambre(chambre);
@@ -70,7 +66,6 @@ class ChambreServiceImplMockTest {
 
     @Test
     void testRetrieveChambre() {
-        // Mock the retrieveChambre method
         when(chambreRepository.findById(1L)).thenReturn(Optional.of(chambre));
 
         Chambre retrievedChambre = chambreService.retrieveChambre(1L);
@@ -82,19 +77,17 @@ class ChambreServiceImplMockTest {
 
     @Test
     void testModifyChambre() {
-        // Mock the modifyChambre method
-        chambre.setTypeC(TypeChambre.SUITE);  // Modify a field
+        chambre.setTypeC(TypeChambre.TRIPLE);  // Modify using an existing type
         when(chambreRepository.save(chambre)).thenReturn(chambre);
 
         Chambre updatedChambre = chambreService.modifyChambre(chambre);
 
-        assertEquals(TypeChambre.SUITE, updatedChambre.getTypeC());
+        assertEquals(TypeChambre.TRIPLE, updatedChambre.getTypeC());
         verify(chambreRepository, times(1)).save(chambre);
     }
 
     @Test
     void testRemoveChambre() {
-        // Mock the removeChambre method
         doNothing().when(chambreRepository).deleteById(1L);
 
         chambreService.removeChambre(1L);
