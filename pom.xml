@@ -72,9 +72,20 @@
             <version>2.1.0</version>
         </dependency>
 
-
-
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>deploymentRepo</id>
+            <name>Nexus Repository</name>
+            <url>http://192.168.50.4:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>deploymentRepo</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://192.168.50.4:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -92,5 +103,8 @@
             </plugin>
         </plugins>
     </build>
+
+
+
 
 </project>
