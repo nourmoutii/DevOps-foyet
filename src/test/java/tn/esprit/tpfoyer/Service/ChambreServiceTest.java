@@ -1,6 +1,7 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Mockito;
 import tn.esprit.tpfoyer.entity.Chambre;
 import tn.esprit.tpfoyer.entity.TypeChambre;
@@ -13,20 +14,19 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class ChambreServiceImplMockTest {
 
-    @Mock
-    ChambreRepository chambreRepository;
-
-    @InjectMocks
-    ChambreServiceImpl chambreService;
-
-    Chambre chambre;
-    List<Chambre> chambreList;
+    private ChambreRepository chambreRepository;
+    private ChambreServiceImpl chambreService;
+    private Chambre chambre;
+    private List<Chambre> chambreList;
 
     @BeforeEach
     void setUp() {
+        // Manually initialize mocks without annotations
+        chambreRepository = mock(ChambreRepository.class);
+        chambreService = new ChambreServiceImpl(chambreRepository); // Inject repository manually
+
         chambre = new Chambre();
         chambre.setIdChambre(1L);
         chambre.setNumeroChambre(101);
@@ -38,15 +38,14 @@ class ChambreServiceImplMockTest {
         );
     }
 
-
     @Test
     void testRetrieveAllChambres() {
         when(chambreRepository.findAll()).thenReturn(chambreList);
 
         List<Chambre> retrievedChambres = chambreService.retrieveAllChambres();
 
-        Mockito.verify(chambreRepository, times(1)).findAll();
-        Mockito.verifyNoMoreInteractions(chambreRepository);
+        verify(chambreRepository, times(1)).findAll();
+        verifyNoMoreInteractions(chambreRepository);
     }
 
     @Test
@@ -55,8 +54,8 @@ class ChambreServiceImplMockTest {
 
         Chambre savedChambre = chambreService.addChambre(chambre);
 
-        Mockito.verify(chambreRepository, times(1)).save(chambre);
-        Mockito.verifyNoMoreInteractions(chambreRepository);
+        verify(chambreRepository, times(1)).save(chambre);
+        verifyNoMoreInteractions(chambreRepository);
     }
 
     @Test
@@ -65,9 +64,8 @@ class ChambreServiceImplMockTest {
 
         Chambre retrievedChambre = chambreService.retrieveChambre(1L);
 
-        Mockito.verify(chambreRepository, times(1)).findById(1L);
-        
-        Mockito.verifyNoMoreInteractions(chambreRepository);
+        verify(chambreRepository, times(1)).findById(1L);
+        verifyNoMoreInteractions(chambreRepository);
     }
 
     @Test
@@ -78,8 +76,8 @@ class ChambreServiceImplMockTest {
 
         Chambre updatedChambre = chambreService.modifyChambre(chambre);
 
-        Mockito.verify(chambreRepository, times(1)).save(chambre);
-        Mockito.verifyNoMoreInteractions(chambreRepository);
+        verify(chambreRepository, times(1)).save(chambre);
+        verifyNoMoreInteractions(chambreRepository);
     }
 
     @Test
@@ -88,7 +86,7 @@ class ChambreServiceImplMockTest {
 
         chambreService.removeChambre(1L);
 
-        Mockito.verify(chambreRepository, times(1)).deleteById(1L);
-        Mockito.verifyNoMoreInteractions(chambreRepository); // Ensure no other interactions occurred
+        verify(chambreRepository, times(1)).deleteById(1L);
+        verifyNoMoreInteractions(chambreRepository);
     }
 }
