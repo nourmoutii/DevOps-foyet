@@ -71,7 +71,11 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.1.0</version>
         </dependency>
+<<<<<<< HEAD
         <dependency>
+=======
+             <dependency>
+>>>>>>> 922a5c02df4f873d3b126a810cf7db49d06f9983
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
