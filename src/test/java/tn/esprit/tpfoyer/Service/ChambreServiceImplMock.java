@@ -45,10 +45,10 @@ public class ChambreServiceImplMock {
     @Test
     @Order(3)
     public void testRetrieveChambre() {
-        Optional<Chambre> retrievedChambre = chambreService.retrieveChambre(1L);
+        Chambre retrievedChambre = chambreService.retrieveChambre(1L);
 
-        Assertions.assertTrue(retrievedChambre.isPresent());
-        Assertions.assertEquals(1L, retrievedChambre.get().getIdChambre());
+        Assertions.assertNotNull(retrievedChambre);
+        Assertions.assertEquals(1L, retrievedChambre.getIdChambre());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ChambreServiceImplMock {
     public void testRemoveChambre() {
         chambreService.removeChambre(1L);
 
-        Optional<Chambre> retrievedChambre = chambreService.retrieveChambre(1L);
-        Assertions.assertTrue(retrievedChambre.isEmpty());
+        Chambre retrievedChambre = chambreService.retrieveChambre(1L); // Adjusted to expect Chambre directly
+        Assertions.assertNull(retrievedChambre); // Ensure removed Chambre is null
     }
 }
