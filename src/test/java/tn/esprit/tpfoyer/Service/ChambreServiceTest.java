@@ -1,92 +1,76 @@
-import org.junit.jupiter.api.BeforeEach;
+package tn.esprit.tpfoyer;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import tn.esprit.tpfoyer.entity.Chambre;
 import tn.esprit.tpfoyer.entity.TypeChambre;
-import tn.esprit.tpfoyer.repository.ChambreRepository;
-import tn.esprit.tpfoyer.service.ChambreServiceImpl;
+import tn.esprit.tpfoyer.service.IChambreService;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+@SpringBootTest
+@TestMethodOrder(OrderAnnotation.class)
+public class ChambreServiceImplMock {
 
-class ChambreServiceImplMockTest {
+    @Autowired
+    IChambreService chambreService;
 
-    private ChambreRepository chambreRepository;
-    private ChambreServiceImpl chambreService;
-    private Chambre chambre;
-    private List<Chambre> chambreList;
+    @Test
+    @Order(1)
+    public void testRetrieveAllChambres() {
+        List<Chambre> retrievedChambres = chambreService.retrieveAllChambres();
+        Assertions.assertNotNull(retrievedChambres);
+    }
 
-    @BeforeEach
-    void setUp() {
-        // Manually initialize mocks without annotations
-        chambreRepository = mock(ChambreRepository.class);
-        chambreService = new ChambreServiceImpl(chambreRepository); // Inject repository manually
-
-        chambre = new Chambre();
-        chambre.setIdChambre(1L);
+    @Test
+    @Order(2)
+    public void testAddChambre() {
+        Chambre chambre = new Chambre();
         chambre.setNumeroChambre(101);
         chambre.setTypeC(TypeChambre.SIMPLE);
 
-        chambreList = Arrays.asList(
-                new Chambre(2L, 102, TypeChambre.DOUBLE, null, null),
-                new Chambre(3L, 103, TypeChambre.TRIPLE, null, null)
-        );
-    }
-
-    @Test
-    void testRetrieveAllChambres() {
-        when(chambreRepository.findAll()).thenReturn(chambreList);
-
-        List<Chambre> retrievedChambres = chambreService.retrieveAllChambres();
-
-        verify(chambreRepository, times(1)).findAll();
-        verifyNoMoreInteractions(chambreRepository);
-    }
-
-    @Test
-    void testAddChambre() {
-        when(chambreRepository.save(chambre)).thenReturn(chambre);
-
         Chambre savedChambre = chambreService.addChambre(chambre);
 
-        verify(chambreRepository, times(1)).save(chambre);
-        verifyNoMoreInteractions(chambreRepository);
+        Assertions.assertNotNull(savedChambre);
+        Assertions.assertEquals(chambre.getNumeroChambre(), savedChambre.getNumeroChambre());
+        Assertions.assertEquals(chambre.getTypeC(), savedChambre.getTypeC());
     }
 
     @Test
-    void testRetrieveChambre() {
-        when(chambreRepository.findById(1L)).thenReturn(Optional.of(chambre));
+    @Order(3)
+    public void testRetrieveChambre() {
+        Optional<Chambre> retrievedChambre = chambreService.retrieveChambre(1L);
 
-        Chambre retrievedChambre = chambreService.retrieveChambre(1L);
-
-        verify(chambreRepository, times(1)).findById(1L);
-        verifyNoMoreInteractions(chambreRepository);
+        Assertions.assertTrue(retrievedChambre.isPresent());
+        Assertions.assertEquals(1L, retrievedChambre.get().getIdChambre());
     }
 
     @Test
-    void testModifyChambre() {
+    @Order(4)
+    public void testModifyChambre() {
+        Chambre chambre = new Chambre();
+        chambre.setIdChambre(1L);
+        chambre.setNumeroChambre(101);
         chambre.setTypeC(TypeChambre.TRIPLE);
-
-        when(chambreRepository.save(chambre)).thenReturn(chambre);
 
         Chambre updatedChambre = chambreService.modifyChambre(chambre);
 
-        verify(chambreRepository, times(1)).save(chambre);
-        verifyNoMoreInteractions(chambreRepository);
+        Assertions.assertNotNull(updatedChambre);
+        Assertions.assertEquals(TypeChambre.TRIPLE, updatedChambre.getTypeC());
     }
 
     @Test
-    void testRemoveChambre() {
-        doNothing().when(chambreRepository).deleteById(1L);
-
+    @Order(5)
+    public void testRemoveChambre() {
         chambreService.removeChambre(1L);
 
-        verify(chambreRepository, times(1)).deleteById(1L);
-        verifyNoMoreInteractions(chambreRepository);
+        Optional<Chambre> retrievedChambre = chambreService.retrieveChambre(1L);
+        Assertions.assertTrue(retrievedChambre.isEmpty());
     }
 }
